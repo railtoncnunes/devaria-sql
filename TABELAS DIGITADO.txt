@@ -1,0 +1,105 @@
+CREATE TABLE Cliente
+	(
+	Codigo int Identity (1,1),
+	Nome varchar(40),
+	CPF char(11),
+	Celular char(8),
+	Telefone char(11),
+	Email varchar(40),
+	Logadouro varchar(40),
+	CEP char(8),
+	Cidade varchar(40),
+	Estado char(2),
+	CONSTRAINT PK_CodigoCliente PRIMARY KEY (Codigo)
+	)
+CREATE TABLE Fidelidade
+	(
+	Codigo_Cliente int identity (1,1),
+	Data_Adesao datetime,
+	Pontos int,
+	CONSTRAINT PK_CodigoClienteFidelidade PRIMARY KEY (Codigo_Cliente),
+	CONSTRAINT FK_CodigoCliente_Fidelidade FOREIGN KEY (Codigo_Cliente) REFERENCES Cliente(Codigo)
+	)
+CREATE TABLE Forma_Pagamento
+	(
+	Codigo int identity (1,1),
+	Nome varchar(40),
+	Tipo varchar(25),
+	CONSTRAINT PK_CodigoPagamento PRIMARY KEY (Codigo)
+	)
+CREATE TABLE Marca
+	(
+	Codigo int identity (1,1),
+	Nome varchar (30),
+	Descricao varchar(50),
+	CONSTRAINT PK_CodigoMarca PRIMARY KEY (Codigo)
+	)
+CREATE TABLE Produto
+	(
+	Codigo int identity (1,1),
+	Nome varchar(30),
+	Descricao varchar(MAX),
+	Codigo_Marca int,
+	CONSTRAINT PK_CodigoProduto PRIMARY KEY (Codigo),
+	CONSTRAINT FK_CodigoMarca FOREIGN KEY (Codigo_Marca) REFERENCES Marca(Codigo)
+	)
+CREATE TABLE Pedido_Venda
+	(
+	Codigo int identity (1,1),
+	Valor decimal(6,2),
+	Valor_Imposto decimal(6,2),
+	Data datetime,
+	Nota_Fiscal int, 
+	Codigo_Cliente int,
+	Codigo_Forma_Pagamento int,
+	CONSTRAINT PK_CodigoVenda PRIMARY KEY (Codigo),
+	CONSTRAINT FK_CodigoFormaPagamento FOREIGN KEY (Codigo_Forma_Pagamento) REFERENCES Forma_Pagamento(Codigo),
+	CONSTRAINT FK_CodigoCliente FOREIGN KEY (Codigo_Cliente) REFERENCES Cliente(Codigo)
+	)
+CREATE TABLE Item_Pedido_Venda
+	(
+	Codigo int identity (1,1),
+	Valor_Unitario decimal(6,2),
+	Quantidade int,
+	Valor_Imposto decimal(6,2),
+	Valor_Total decimal(6,2),
+	Codigo_Produto int,
+	Codigo_Pedido_Venda int,
+	CONSTRAINT PK_CodigoPedidoVenda PRIMARY KEY (Codigo),
+	CONSTRAINT FK_CodigoPedidoProduto FOREIGN KEY (Codigo_Produto) REFERENCES Produto(Codigo),
+	CONSTRAINT FK_CodigoVenda FOREIGN KEY (Codigo_Pedido_Venda) REFERENCES Pedido_Venda(Codigo)
+	)
+CREATE TABLE Distribuidor 
+	(
+	Codigo int identity (1,1),
+	Nome_Fantasia varchar(40),
+	Razao_Social varchar(40),
+	CNPJ NCHAR(14),
+	Logadouro varchar(40),
+	CEP NCHAR(8),
+	Cidade varchar(35),
+	Estado char(2),
+	CONSTRAINT PK_CodigoDistribuidor PRIMARY KEY(Codigo)
+	)
+CREATE TABLE Pedido_Compra
+	(
+	Codigo int identity (1,1),
+	Valor decimal(6,2),
+	Data datetime,
+	Nota_Fiscal int,
+	Codigo_Distribuidor int,
+	CONSTRAINT PK_CodigoPedidoCompra PRIMARY KEY (Codigo),
+	CONSTRAINT FK_CodigoDistribuidor FOREIGN KEY (Codigo_Distribuidor) REFERENCES Distribuidor(Codigo)
+	)
+CREATE TABLE Item_Pedido_Compra
+	(
+	Codigo int identity (1,1),
+	Valor_Unitario decimal(6,2),
+	Quantidade int,
+	Valor_Total decimal(6,2),
+	Codigo_Produto int,
+	Codigo_Pedido_Compra int,
+	CONSTRAINT PK_CodigoItemPedidoCompra PRIMARY KEY (Codigo),
+	CONSTRAINT FK_CodigoPedido_Produto FOREIGN KEY (Codigo_Produto) REFERENCES Produto(Codigo),
+	CONSTRAINT FK_CodigoPedidoCompra FOREIGN KEY (Codigo_Pedido_Compra) REFERENCES Pedido_Compra(Codigo)
+	)
